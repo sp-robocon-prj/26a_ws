@@ -15,7 +15,7 @@ public:
         : Node("um7_node")
     {
         fd_ = open(
-            "/dev/ttyUSB0",
+            "/dev/serial/by-id/usb-Silicon_Labs_CP2104_USB_to_UART_Bridge_Controller_02J4KT83-if00-port0",
             O_RDWR | O_NOCTTY);
 
         if (fd_ < 0)

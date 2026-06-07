@@ -6,17 +6,18 @@ import tf2_ros
 import serial
 import struct
 import math
+import time
 
 class UM7DriverNode(Node):
     def __init__(self):
         super().__init__('um7_driver_node')
         
         # パラメータの宣言と取得
-        self.declare_parameter('port', '/dev/ttyUSB0')
+        self.declare_parameter('port', '/dev/serial/by-id/usb-Silicon_Labs_CP2104_USB_to_UART_Bridge_Controller_02J4KT83-if00-port0')
         self.declare_parameter('baudrate', 115200)
         self.declare_parameter('frame_id', 'imu_link')
         
-        port = self.get_parameter('port').get_parameter_value().string_value
+        self.port = self.get_parameter('port').get_parameter_value().string_value
         baudrate = self.get_parameter('baudrate').get_parameter_value().integer_value
         self.frame_id = self.get_parameter('frame_id').get_parameter_value().string_value
         
@@ -26,6 +27,8 @@ class UM7DriverNode(Node):
         self.initial_pitch = 0.0
         self.initial_yaw = 0.0
         self.init_start_time = self.get_clock().now()
+        self.last_data_time = time.time()
+        self.timeout_warned = False
 
         # パブリッシャーとTFブロードキャスター
         self.imu_pub = self.create_publisher(Imu, 'imu/data', 10)
@@ -33,17 +36,18 @@ class UM7DriverNode(Node):
 
         # シリアルポートオープン
         try:
-            self.ser = serial.Serial(port, baudrate, timeout=0.01)
-            self.get_logger().info(f"Connected to UM7 on {port} ({baudrate} bps)")
+            self.ser = serial.Serial(self.port, baudrate, timeout=0.01)
+            self.get_logger().info(f"Connected to UM7 on {self.port} ({baudrate} bps)")
         except serial.SerialException as e:
             self.get_logger().error(f"Could not open serial port: {e}")
             raise e
 
+        # 【新規】UM7ハードウェアへ「ジャイロのゼロ点校正コマンド (ZERO_GYROS)」を送信
         # コマンドレジスタ: 0xAD / チェックサム: 0x01FE
         try:
             zero_gyros_cmd = b'\x73\x6E\x70\x00\xAD\x01\xFE'
             self.ser.write(zero_gyros_cmd)
-            self.get_logger().info("ジャイロ自動校正を行います。約1.5秒間、静止させてください。")
+            self.get_logger().info("⚠️ UM7へジャイロ自動校正コマンドを送信しました。約1.5秒間、センサーを動かさず完全に静止させてください！")
         except Exception as e:
             self.get_logger().error(f"Failed to send ZERO_GYROS command: {e}")
 
@@ -55,6 +59,11 @@ class UM7DriverNode(Node):
         if self.ser.in_waiting > 0:
             self.buffer.extend(self.ser.read(self.ser.in_waiting))
             self.parse_buffer()
+        else:
+            # タイムアウトチェック (3秒間データが来ない場合警告)
+            if not self.timeout_warned and not self.is_initialized and (time.time() - self.last_data_time > 3.0):
+                self.get_logger().error(f"⚠️ 3秒間 UM7 からのデータを受信していません！ポート {self.port} が間違っていませんか？ (例: /dev/ttyUSB1 を試してください)")
+                self.timeout_warned = True
 
     def parse_buffer(self):
         while len(self.buffer) >= 3:
@@ -91,6 +100,7 @@ class UM7DriverNode(Node):
             recv_checksum = struct.unpack('>H', packet_data[-2:])[0]
             
             if calc_checksum == recv_checksum:
+                self.last_data_time = time.time()
                 self.process_packet(address, packet_data[5:-2])
                 
             del self.buffer[:packet_len]
@@ -115,13 +125,15 @@ class UM7DriverNode(Node):
             if time_elapsed < 1.5:
                 return
 
+            # 【新規】1.5秒経過直後の最初のデータを「基準（0度）」として記憶
             if not self.is_initialized:
                 self.initial_roll = roll
                 self.initial_pitch = pitch
                 self.initial_yaw = yaw
                 self.is_initialized = True
-                self.get_logger().info("初期化済み・現在の姿勢を0度に設定しました。")
+                self.get_logger().info("✨ 起動時初期化が完了しました！現在の姿勢を基準点（0度）に設定しました。")
             
+            # 【新規】基準点からの相対角度（オフセット引き算）に変換
             roll -= self.initial_roll
             pitch -= self.initial_pitch
             yaw -= self.initial_yaw

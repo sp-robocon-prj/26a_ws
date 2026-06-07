@@ -4,7 +4,7 @@ package_name = 'rs_labs_um7'
 
 setup(
     name=package_name,
-    version='0.0.0',
+    version='0.0.1',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages',
@@ -13,15 +13,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='umypc',
-    maintainer_email='umypc@todo.todo',
-    description='TODO: Package description',
-    license='TODO: License declaration',
-    extras_require={
-        'test': [
-            'pytest',
-        ],
-    },
+    maintainer='user',
+    maintainer_email='user@todo.todo',
+    description='ROS2 Jazzy driver for RSX-UM7 IMU sensor',
+    license='Apache-2.0',
     entry_points={
         'console_scripts': [
             'um7_driver_node = rs_labs_um7.um7_driver_node:main'
