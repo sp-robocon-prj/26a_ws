@@ -39,7 +39,6 @@ class UM7DriverNode(Node):
             self.get_logger().error(f"Could not open serial port: {e}")
             raise e
 
-        # 【新規】UM7ハードウェアへ「ジャイロのゼロ点校正コマンド (ZERO_GYROS)」を送信
         # コマンドレジスタ: 0xAD / チェックサム: 0x01FE
         try:
             zero_gyros_cmd = b'\x73\x6E\x70\x00\xAD\x01\xFE'
@@ -116,7 +115,6 @@ class UM7DriverNode(Node):
             if time_elapsed < 1.5:
                 return
 
-            # 【新規】1.5秒経過直後の最初のデータを「基準（0度）」として記憶
             if not self.is_initialized:
                 self.initial_roll = roll
                 self.initial_pitch = pitch
@@ -124,7 +122,6 @@ class UM7DriverNode(Node):
                 self.is_initialized = True
                 self.get_logger().info("初期化済み・現在の姿勢を0度に設定しました。")
             
-            # 【新規】基準点からの相対角度（オフセット引き算）に変換
             roll -= self.initial_roll
             pitch -= self.initial_pitch
             yaw -= self.initial_yaw
