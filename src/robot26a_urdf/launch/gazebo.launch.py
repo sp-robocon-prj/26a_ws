@@ -97,10 +97,10 @@ def generate_launch_description():
             'require_enable_button': False,
             'axis_linear.x': 1, # Left stick up/down
             'axis_linear.y': 0, # Left stick left/right
-            'axis_angular.yaw': 3, # Right stick left/right
-            'scale_linear.x': 1.0,
-            'scale_linear.y': 1.0,
-            'scale_angular.yaw': 1.0
+            'axis_angular.yaw': 4, # Right stick left/right
+            'scale_linear.x': 2.5,
+            'scale_linear.y': 2.5,
+            'scale_angular.yaw': 2.0
         }],
         remappings=[('/cmd_vel', '/cmd_vel')]
     )

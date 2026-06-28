@@ -40,7 +40,7 @@
     <model name="field">
       <static>true</static>
       <link name="link">
-        <pose>0 0 0 1.5708 0 0</pose>
+        <pose>0 0 0 0 0 0</pose>
         <collision name="collision">
           <geometry>
             <mesh>

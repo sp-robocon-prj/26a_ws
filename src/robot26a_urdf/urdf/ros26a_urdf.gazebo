@@ -4,64 +4,64 @@
 <xacro:property name="body_color" value="Gazebo/Silver" />
 
 <gazebo reference="base_link">
-  <material>${body_color}</material>
+  
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
   <gravity>true</gravity>
 </gazebo>
 
-<gazebo reference="wheel_rear_right_link">
-  <material>${body_color}</material>
+<gazebo reference="omni_2_1">
+  
+  <mu1>0.0</mu1>
+  <mu2>0.0</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="omni_1_1">
+  
+  <mu1>0.0</mu1>
+  <mu2>0.0</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="omni_4_1">
+  
+  <mu1>0.0</mu1>
+  <mu2>0.0</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="omni_3_1">
+  
+  <mu1>0.0</mu1>
+  <mu2>0.0</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="r_lidar_1">
+  
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="wheel_front_right_link">
-  <material>${body_color}</material>
+<gazebo reference="r_cam_1">
+  
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="wheel_front_left_link">
-  <material>${body_color}</material>
+<gazebo reference="r_cam_body_1">
+  
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="wheel_rear_left_link">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
-<gazebo reference="lidar_link">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
-<gazebo reference="camera_link">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
-<gazebo reference="camera_body_link">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
-<gazebo reference="lidar_head_link">
-  <material>${body_color}</material>
+<gazebo reference="r_lidar_head_1">
+  
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
@@ -72,5 +72,9 @@
     <parameters>$(find robot26a_urdf)/config/ros2_controllers.yaml</parameters>
   </plugin>
 </gazebo>
+
+
+
+
 
 </robot>
