@@ -5,6 +5,7 @@
 		}
 	],
 	"settings": {
-		"stm32cube-ide-clangd.path": "cube"
+		"stm32cube-ide-clangd.path": "cube",
+		"github.copilot.chat.codeGeneration.useInstructionFiles": true
 	}
 }

@@ -1,0 +1,25 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    omni_wheel_controller:
+      type: velocity_controllers/JointGroupVelocityController
+
+    lidar_controller:
+      type: velocity_controllers/JointGroupVelocityController
+
+omni_wheel_controller:
+  ros__parameters:
+    joints:
+      - wheel_front_left_joint
+      - wheel_front_right_joint
+      - wheel_rear_left_joint
+      - wheel_rear_right_joint
+
+lidar_controller:
+  ros__parameters:
+    joints:
+      - lidar_head_joint

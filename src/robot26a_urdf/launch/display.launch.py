@@ -9,7 +9,7 @@ from ament_index_python.packages import get_package_share_directory
 
 
 def generate_launch_description():
-    share_dir = get_package_share_directory('ros26a_urdf_description')
+    share_dir = get_package_share_directory('robot26a_urdf')
 
     xacro_file = os.path.join(share_dir, 'urdf', 'ros26a_urdf.xacro')
     robot_description_config = xacro.process_file(xacro_file)

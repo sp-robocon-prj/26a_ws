@@ -2,7 +2,7 @@ from setuptools import setup
 import os
 from glob import glob
 
-package_name = 'ros26a_urdf_description'
+package_name = 'robot26a_urdf'
 
 setup(
     name=package_name,
@@ -15,7 +15,8 @@ setup(
         (os.path.join('share', package_name, 'launch'), glob('launch/*.launch.py')),
         (os.path.join('share', package_name, 'urdf'), glob('urdf/*')),
         (os.path.join('share', package_name, 'meshes'), glob('meshes/*')),
-        (os.path.join('share', package_name, 'config'), glob('config/*'))
+        (os.path.join('share', package_name, 'config'), glob('config/*')),
+        (os.path.join('share', package_name, 'worlds'), glob('worlds/*'))
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -26,6 +27,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'omni_kinematics_node = robot26a_urdf.omni_kinematics_node:main',
         ],
     },
 )
