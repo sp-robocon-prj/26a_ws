@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../../can_format_26a"
 		}
 	],
 	"settings": {
