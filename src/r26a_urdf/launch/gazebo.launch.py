@@ -1,7 +1,7 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, AppendEnvironmentVariable
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, AppendEnvironmentVariable, SetEnvironmentVariable
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
@@ -21,19 +21,29 @@ def generate_launch_description():
         os.path.dirname(pkg_share)
     )
 
+    # Force NVIDIA EGL for headless sensor rendering in distrobox
+    nvidia_prime = SetEnvironmentVariable(
+        '__NV_PRIME_RENDER_OFFLOAD', '1'
+    )
+    nvidia_glx = SetEnvironmentVariable(
+        '__GLX_VENDOR_LIBRARY_NAME', 'nvidia'
+    )
     
     # Process xacro
     xacro_file = os.path.join(pkg_share, 'urdf', 'r26a_urdf.xacro')
     robot_description_config = xacro.process_file(xacro_file)
     robot_urdf = robot_description_config.toxml()
     
+    # Path to custom world file with sensors plugin
+    world_file = os.path.join(pkg_share, 'worlds', 'empty_with_sensors.sdf')
+
     # Gazebo sim
     pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')
         ),
-        launch_arguments={'gz_args': '-r empty.sdf'}.items(),
+        launch_arguments={'gz_args': f'-r {world_file}'}.items(),
     )
     
     # Robot state publisher
@@ -72,6 +82,8 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
+        nvidia_prime,
+        nvidia_glx,
         gz_resource_path,
         ign_resource_path,
         gazebo,

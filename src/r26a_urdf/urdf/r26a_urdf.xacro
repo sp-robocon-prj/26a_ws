@@ -200,7 +200,7 @@
   </link>
   <gazebo reference="r_lidar_head_1">
     <material>Gazebo/Blue</material>
-    <sensor type="gpu_lidar" name="lidar">
+    <sensor type="lidar" name="lidar">
       <pose>0 0 0 0 0 0</pose>
       <visualize>true</visualize>
       <update_rate>15</update_rate>
