@@ -1,251 +1,287 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <robot name="r26a_urdf" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-<xacro:include filename="$(find r26a_urdf)/urdf/materials.xacro" />
-<xacro:include filename="$(find r26a_urdf)/urdf/r26a_urdf.ros2control" />
-<xacro:include filename="$(find r26a_urdf)/urdf/r26a_urdf.gazebo" />
-<link name="base_link">
-  <inertial>
-    <origin xyz="-2.4286184067020517e-05 -0.021344258350690065 0.10100713035152749" rpy="0 0 0"/>
-    <mass value="4.373906465543717"/>
-    <inertia ixx="0.390828" iyy="0.36719" izz="0.702933" ixy="6e-06" iyz="0.018495" ixz="2e-06"/>
-  </inertial>
-  <visual>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+  <xacro:include filename="$(find r26a_urdf)/urdf/materials.xacro" />
+  <xacro:include filename="$(find r26a_urdf)/urdf/r26a_urdf.ros2control" />
+  <xacro:include filename="$(find r26a_urdf)/urdf/r26a_urdf.gazebo" />
+  <link name="dummy_link" />
+  <joint name="dummy_joint" type="fixed">
+    <parent link="dummy_link" />
+    <child link="base_link" />
+  </joint>
 
-<link name="omni_2_1">
-  <inertial>
-    <origin xyz="0.033324758909945684 0.03336765433449884 8.127027229271055e-06" rpy="0 0 0"/>
-    <mass value="2.8236842197299814"/>
-    <inertia ixx="0.006412" iyy="0.006411" izz="0.004583" ixy="0.001829" iyz="1e-06" ixz="1e-06"/>
-  </inertial>
-  <visual>
-    <origin xyz="0.383252 0.383252 -0.076" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/omni_2_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="0.383252 0.383252 -0.076" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/omni_2_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-2.4286184067020517e-05 -0.021344258350690065 0.10100713035152749" rpy="0 0 0" />
+      <mass value="4.373906465543717" />
+      <inertia ixx="0.390828" iyy="0.36719" izz="0.702933" ixy="6e-06" iyz="0.018495" ixz="2e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://r26a_urdf/meshes/base_link.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://r26a_urdf/meshes/base_link.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
 
-<link name="omni_1_1">
-  <inertial>
-    <origin xyz="-0.033351953298285275 0.033340459946157475 -3.033164558431667e-05" rpy="0 0 0"/>
-    <mass value="2.8236842197299814"/>
-    <inertia ixx="0.006413" iyy="0.00641" izz="0.004583" ixy="-0.001828" iyz="0.0" ixz="-0.0"/>
-  </inertial>
-  <visual>
-    <origin xyz="-0.383252 0.383252 -0.076" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/omni_1_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="-0.383252 0.383252 -0.076" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/omni_1_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+  <link name="omni_2_1">
+    <inertial>
+      <origin xyz="0.033324758909945684 0.03336765433449884 8.127027229271055e-06" rpy="0 0 0" />
+      <mass value="2.8236842197299814" />
+      <inertia ixx="0.006412" iyy="0.006411" izz="0.004583" ixy="0.001829" iyz="1e-06" ixz="1e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.383252 0.383252 -0.076" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://r26a_urdf/meshes/omni_2_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin xyz="0.03335 0.03335 0" rpy="0 0 0" />
+      <geometry>
+        <sphere radius="0.076" />
+      </geometry>
+    </collision>
+  </link>
 
-<link name="omni_4_1">
-  <inertial>
-    <origin xyz="-0.03336765540973269 -0.033324760516337704 -8.12736003742709e-06" rpy="0 0 0"/>
-    <mass value="2.823684325023845"/>
-    <inertia ixx="0.006411" iyy="0.006412" izz="0.004583" ixy="0.001829" iyz="1e-06" ixz="1e-06"/>
-  </inertial>
-  <visual>
-    <origin xyz="-0.383252 -0.383252 -0.076" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/omni_4_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="-0.383252 -0.383252 -0.076" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/omni_4_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+  <link name="omni_1_1">
+    <inertial>
+      <origin xyz="-0.033351953298285275 0.033340459946157475 -3.033164558431667e-05" rpy="0 0 0" />
+      <mass value="2.8236842197299814" />
+      <inertia ixx="0.006413" iyy="0.00641" izz="0.004583" ixy="-0.001828" iyz="0.0" ixz="-0.0" />
+    </inertial>
+    <visual>
+      <origin xyz="-0.383252 0.383252 -0.076" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://r26a_urdf/meshes/omni_1_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin xyz="-0.03335 0.03335 0" rpy="0 0 0" />
+      <geometry>
+        <sphere radius="0.076" />
+      </geometry>
+    </collision>
+  </link>
 
-<link name="omni_3_1">
-  <inertial>
-    <origin xyz="0.03332476051633948 -0.03336765540973591 -8.127360037579745e-06" rpy="0 0 0"/>
-    <mass value="2.823684325023845"/>
-    <inertia ixx="0.006412" iyy="0.006411" izz="0.004583" ixy="-0.001829" iyz="1e-06" ixz="-1e-06"/>
-  </inertial>
-  <visual>
-    <origin xyz="0.383252 -0.383252 -0.076" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/omni_3_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="0.383252 -0.383252 -0.076" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/omni_3_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+  <link name="omni_4_1">
+    <inertial>
+      <origin xyz="-0.03336765540973269 -0.033324760516337704 -8.12736003742709e-06" rpy="0 0 0" />
+      <mass value="2.823684325023845" />
+      <inertia ixx="0.006411" iyy="0.006412" izz="0.004583" ixy="0.001829" iyz="1e-06" ixz="1e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="-0.383252 -0.383252 -0.076" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://r26a_urdf/meshes/omni_4_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin xyz="-0.03335 -0.03335 0" rpy="0 0 0" />
+      <geometry>
+        <sphere radius="0.076" />
+      </geometry>
+    </collision>
+  </link>
 
-<link name="r_lidar_1">
-  <inertial>
-    <origin xyz="-0.08000446122505181 0.04106120302884397 -0.010858053646773336" rpy="0 0 0"/>
-    <mass value="0.350138445908399"/>
-    <inertia ixx="0.000308" iyy="0.000617" izz="0.00089" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
-  </inertial>
-  <visual>
-    <origin xyz="-0.08 0.374382 -0.433095" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/r_lidar_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="-0.08 0.374382 -0.433095" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/r_lidar_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+  <link name="omni_3_1">
+    <inertial>
+      <origin xyz="0.03332476051633948 -0.03336765540973591 -8.127360037579745e-06" rpy="0 0 0" />
+      <mass value="2.823684325023845" />
+      <inertia ixx="0.006412" iyy="0.006411" izz="0.004583" ixy="-0.001829" iyz="1e-06" ixz="-1e-06" />
+    </inertial>
+    <visual>
+      <origin xyz="0.383252 -0.383252 -0.076" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://r26a_urdf/meshes/omni_3_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin xyz="0.03335 -0.03335 0" rpy="0 0 0" />
+      <geometry>
+        <sphere radius="0.076" />
+      </geometry>
+    </collision>
+  </link>
 
-<link name="r_cam_1">
-  <inertial>
-    <origin xyz="-0.015463046523140393 0.010481077086632706 0.0167332636074774" rpy="0 0 0"/>
-    <mass value="0.06383766089551529"/>
-    <inertia ixx="1.4e-05" iyy="4.7e-05" izz="4.1e-05" ixy="1e-06" iyz="-1e-06" ixz="0.0"/>
-  </inertial>
-  <visual>
-    <origin xyz="-0.015 0.250446 -0.4402" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/r_cam_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="-0.015 0.250446 -0.4402" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/r_cam_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+  <link name="r_lidar_1">
+    <inertial>
+      <origin xyz="-0.08000446122505181 0.04106120302884397 -0.010858053646773336" rpy="0 0 0" />
+      <mass value="0.350138445908399" />
+      <inertia ixx="0.000308" iyy="0.000617" izz="0.00089" ixy="-0.0" iyz="-0.0" ixz="0.0" />
+    </inertial>
+    <visual>
+      <origin xyz="-0.08 0.374382 -0.433095" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://r26a_urdf/meshes/r_lidar_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin xyz="-0.08 0.374382 -0.433095" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://r26a_urdf/meshes/r_lidar_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
 
-<link name="r_cam_body_1">
-  <inertial>
-    <origin xyz="-0.029749880192293236 0.009806199358828122 1.596729986563794e-07" rpy="0 0 0"/>
-    <mass value="0.017157190826827023"/>
-    <inertia ixx="1e-06" iyy="1.4e-05" izz="1.5e-05" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
-  </inertial>
-  <visual>
-    <origin xyz="-0.02975 0.251646 -0.4612" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/r_cam_body_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="-0.02975 0.251646 -0.4612" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/r_cam_body_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+  <link name="r_cam_1">
+    <inertial>
+      <origin xyz="-0.015463046523140393 0.010481077086632706 0.0167332636074774" rpy="0 0 0" />
+      <mass value="0.06383766089551529" />
+      <inertia ixx="1.4e-05" iyy="4.7e-05" izz="4.1e-05" ixy="1e-06" iyz="-1e-06" ixz="0.0" />
+    </inertial>
+    <visual>
+      <origin xyz="-0.015 0.250446 -0.4402" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://r26a_urdf/meshes/r_cam_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin xyz="-0.015 0.250446 -0.4402" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://r26a_urdf/meshes/r_cam_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
 
-<link name="r_lidar_head_1">
-  <inertial>
-    <origin xyz="9.354544219402101e-06 -6.517181017173801e-05 -0.016167762462367286" rpy="0 0 0"/>
-    <mass value="0.6884110896982916"/>
-    <inertia ixx="0.000306" iyy="0.000194" izz="0.000371" ixy="7e-06" iyz="-0.0" ixz="0.0"/>
-  </inertial>
-  <visual>
-    <origin xyz="-0.0 0.333335 -0.394095" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/r_lidar_head_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="-0.0 0.333335 -0.394095" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find r26a_urdf)/meshes/r_lidar_head_1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
+  <link name="r_cam_body_1">
+    <inertial>
+      <origin xyz="-0.029749880192293236 0.009806199358828122 1.596729986563794e-07" rpy="0 0 0" />
+      <mass value="0.017157190826827023" />
+      <inertia ixx="1.0e-05" iyy="1.4e-05" izz="1.5e-05" ixy="-0.0" iyz="-0.0" ixz="-0.0" />
+    </inertial>
+    <visual>
+      <origin xyz="-0.02975 0.251646 -0.4612" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://r26a_urdf/meshes/r_cam_body_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin xyz="-0.02975 0.251646 -0.4612" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://r26a_urdf/meshes/r_cam_body_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
 
-<joint name="回転 5" type="continuous">
-  <origin xyz="-0.383252 -0.383252 0.076" rpy="0 0 0"/>
-  <parent link="base_link"/>
-  <child link="omni_2_1"/>
-  <axis xyz="0.707107 0.707107 -0.0"/>
-</joint>
+  <link name="r_lidar_head_1">
+    <inertial>
+      <origin xyz="9.354544219402101e-06 -6.517181017173801e-05 -0.016167762462367286" rpy="0 0 0" />
+      <mass value="0.6884110896982916" />
+      <inertia ixx="0.000306" iyy="0.000194" izz="0.000371" ixy="7e-06" iyz="-0.0" ixz="0.0" />
+    </inertial>
+    <visual>
+      <origin xyz="-0.0 0.333335 -0.394095" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://r26a_urdf/meshes/r_lidar_head_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin xyz="-0.0 0.333335 -0.394095" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://r26a_urdf/meshes/r_lidar_head_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="r_lidar_head_1">
+    <material>Gazebo/Blue</material>
+    <sensor type="gpu_lidar" name="lidar">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>15</update_rate>
+      <topic>scan</topic>
+      <gz_frame_id>r_lidar_head_1</gz_frame_id>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>400</samples>
+            <resolution>1</resolution>
+            <min_angle>-2.35619449</min_angle>
+            <max_angle>2.35619449</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.05</min>
+          <max>25.0</max>
+          <resolution>0.001</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+    </sensor>
+  </gazebo>
 
-<joint name="回転 6" type="continuous">
-  <origin xyz="0.383252 -0.383252 0.076" rpy="0 0 0"/>
-  <parent link="base_link"/>
-  <child link="omni_1_1"/>
-  <axis xyz="-0.707107 0.707107 -0.0"/>
-</joint>
+  <joint name="回転 5" type="continuous">
+    <origin xyz="-0.383252 -0.383252 0.076" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="omni_2_1" />
+    <axis xyz="0.707107 0.707107 -0.0" />
+  </joint>
 
-<joint name="回転 7" type="continuous">
-  <origin xyz="0.383252 0.383252 0.076" rpy="0 0 0"/>
-  <parent link="base_link"/>
-  <child link="omni_4_1"/>
-  <axis xyz="-0.707107 -0.707107 0.0"/>
-</joint>
+  <joint name="回転 6" type="continuous">
+    <origin xyz="0.383252 -0.383252 0.076" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="omni_1_1" />
+    <axis xyz="-0.707107 0.707107 -0.0" />
+  </joint>
 
-<joint name="回転 8" type="continuous">
-  <origin xyz="-0.383252 0.383252 0.076" rpy="0 0 0"/>
-  <parent link="base_link"/>
-  <child link="omni_3_1"/>
-  <axis xyz="0.707107 -0.707107 0.0"/>
-</joint>
+  <joint name="回転 7" type="continuous">
+    <origin xyz="0.383252 0.383252 0.076" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="omni_4_1" />
+    <axis xyz="-0.707107 -0.707107 0.0" />
+  </joint>
 
-<joint name="回転 9" type="continuous">
-  <origin xyz="0.08 -0.374382 0.433095" rpy="0 0 0"/>
-  <parent link="base_link"/>
-  <child link="r_lidar_1"/>
-  <axis xyz="-1.0 0.0 0.0"/>
-</joint>
+  <joint name="回転 8" type="continuous">
+    <origin xyz="-0.383252 0.383252 0.076" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="omni_3_1" />
+    <axis xyz="0.707107 -0.707107 0.0" />
+  </joint>
 
-<joint name="回転 14" type="continuous">
-  <origin xyz="0.015 -0.250446 0.4402" rpy="0 0 0"/>
-  <parent link="base_link"/>
-  <child link="r_cam_1"/>
-  <axis xyz="-1.0 0.0 0.0"/>
-</joint>
+  <joint name="回転 9" type="fixed">
+    <origin xyz="0.08 -0.374382 0.433095" rpy="-0.5708 0 0" />
+    <parent link="base_link" />
+    <child link="r_lidar_1" />
+    <axis xyz="-1.0 0.0 0.0" />
+  </joint>
 
-<joint name="剛性 15" type="fixed">
-  <origin xyz="0.01475 -0.0012 0.021" rpy="0 0 0"/>
-  <parent link="r_cam_1"/>
-  <child link="r_cam_body_1"/>
-</joint>
+  <joint name="回転 14" type="fixed">
+    <origin xyz="0.015 -0.250446 0.4402" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="r_cam_1" />
+    <axis xyz="-1.0 0.0 0.0" />
+  </joint>
 
-<joint name="回転 17" type="continuous">
-  <origin xyz="-0.08 0.041047 -0.039" rpy="0 0 0"/>
-  <parent link="r_lidar_1"/>
-  <child link="r_lidar_head_1"/>
-  <axis xyz="0.0 -0.0 -1.0"/>
-</joint>
+  <joint name="剛性 15" type="fixed">
+    <origin xyz="0.01475 -0.0012 0.021" rpy="0 0 0" />
+    <parent link="r_cam_1" />
+    <child link="r_cam_body_1" />
+  </joint>
+
+  <joint name="回転 17" type="continuous">
+    <origin xyz="-0.08 0.041047 -0.039" rpy="0 0 0" />
+    <parent link="r_lidar_1" />
+    <child link="r_lidar_head_1" />
+    <axis xyz="0.0 -0.0 -1.0" />
+  </joint>
 
 </robot>
