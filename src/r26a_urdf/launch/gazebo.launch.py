@@ -1,93 +1,65 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, AppendEnvironmentVariable, SetEnvironmentVariable
+from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
+from launch.substitutions import LaunchConfiguration
 import xacro
 
 def generate_launch_description():
-    pkg_name = 'r26a_urdf'
-    pkg_share = get_package_share_directory(pkg_name)
-    
-    # Set Gazebo resource paths to find meshes
-    gz_resource_path = AppendEnvironmentVariable(
-        'GZ_SIM_RESOURCE_PATH',
-        os.path.dirname(pkg_share)
-    )
-    ign_resource_path = AppendEnvironmentVariable(
-        'IGN_GAZEBO_RESOURCE_PATH',
-        os.path.dirname(pkg_share)
-    )
-
-    # Force NVIDIA EGL for headless sensor rendering in distrobox
-    nvidia_prime = SetEnvironmentVariable(
-        '__NV_PRIME_RENDER_OFFLOAD', '1'
-    )
-    nvidia_glx = SetEnvironmentVariable(
-        '__GLX_VENDOR_LIBRARY_NAME', 'nvidia'
-    )
-    
-    # Process xacro
-    xacro_file = os.path.join(pkg_share, 'urdf', 'r26a_urdf.xacro')
-    robot_description_config = xacro.process_file(xacro_file)
-    robot_urdf = robot_description_config.toxml()
-    
-    # Path to custom world file with sensors plugin
-    world_file = os.path.join(pkg_share, 'worlds', 'empty_with_sensors.sdf')
-
-    # Gazebo sim
+    # Directories
+    pkg_r26a_urdf = get_package_share_directory('r26a_urdf')
     pkg_ros_gz_sim = get_package_share_directory('ros_gz_sim')
+
+    # Process Xacro
+    xacro_file = os.path.join(pkg_r26a_urdf, 'urdf', 'r26a_urdf.xacro')
+    robot_description_config = xacro.process_file(xacro_file)
+    robot_description = {'robot_description': robot_description_config.toxml()}
+
+    # Robot State Publisher Node
+    node_robot_state_publisher = Node(
+        package='robot_state_publisher',
+        executable='robot_state_publisher',
+        output='screen',
+        parameters=[robot_description, {'use_sim_time': True}]
+    )
+
+    # Gazebo Sim
+    world_file = os.path.join(pkg_r26a_urdf, 'worlds', 'empty.world')
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py')
         ),
         launch_arguments={'gz_args': f'-r {world_file}'}.items(),
     )
-    
-    # Robot state publisher
-    robot_state_publisher = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        name='robot_state_publisher',
-        output='both',
-        parameters=[
-            {'robot_description': robot_urdf,
-             'use_sim_time': True}
-        ]
-    )
-    
-    # Spawn entity
+
+    # Spawn Robot in Gazebo
     spawn = Node(
         package='ros_gz_sim',
         executable='create',
         arguments=[
             '-name', 'r26a',
             '-topic', 'robot_description',
-            '-z', '0.5'
+            '-z', '0.5' # Spawn a bit above ground to avoid collision
         ],
         output='screen'
     )
-    
-    # Bridge
+
+    # Bridge between ROS and Gazebo (Optional, for clock or joints)
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
             '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
-            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock'
         ],
         output='screen'
     )
-    
+
     return LaunchDescription([
-        nvidia_prime,
-        nvidia_glx,
-        gz_resource_path,
-        ign_resource_path,
+        node_robot_state_publisher,
         gazebo,
-        robot_state_publisher,
         spawn,
         bridge
     ])
