@@ -1,0 +1,3 @@
+velocity2omni_node:
+  ros__parameters:
+    chassis_type: "omni4_x"  # 使用可能な値: "omni4_x", "mecanum", "omni3"
