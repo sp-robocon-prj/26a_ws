@@ -1,1 +1,0 @@
-ros2 pkg create --build-type ament_cmake my_robot_package --dependencies rclcpp

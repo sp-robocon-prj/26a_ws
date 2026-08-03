@@ -1,0 +1,10 @@
+# VS Code
+.vscode/browse.vc.db*
+.vscode/*.db
+.vscode/*.db-shm
+.vscode/*.db-wal
+
+# ROS2 build
+build/
+install/
+log/
