@@ -24,5 +24,18 @@ def generate_launch_description():
             name='velocity2omni_node',
             output='screen',
             parameters=[config]
+        ),
+        Node(
+            package='ros2can',
+            executable='udp_bridge_node',
+            name='udp_bridge_node',
+            output='screen',
+            parameters=[{'remote_ip': '127.0.0.1'}]
+        ),
+        Node(
+            package='can_mapping',
+            executable='wheel_vel_mapper_node',
+            name='wheel_vel_mapper_node',
+            output='screen'
         )
     ])

@@ -22,10 +22,15 @@ struct UdpPacket {
 class UdpBridgeNode : public rclcpp::Node {
 public:
     UdpBridgeNode() : Node("udp_bridge_node"), sockfd_(-1), is_running_(true) {
-        std::string local_ip = "192.168.1.102";
-        int local_port = 4001;
-        remote_ip_ = "192.168.1.103";
-        remote_port_ = 4001;
+        this->declare_parameter<std::string>("local_ip", "0.0.0.0");
+        this->declare_parameter<int>("local_port", 4001);
+        this->declare_parameter<std::string>("remote_ip", "192.168.1.103");
+        this->declare_parameter<int>("remote_port", 4001);
+
+        std::string local_ip = this->get_parameter("local_ip").as_string();
+        int local_port = this->get_parameter("local_port").as_int();
+        remote_ip_ = this->get_parameter("remote_ip").as_string();
+        remote_port_ = this->get_parameter("remote_port").as_int();
 
         publisher_ = this->create_publisher<ros2can::msg::UdpCanFrame>("udp_can_rx", 10);
         subscription_ = this->create_subscription<ros2can::msg::UdpCanFrame>(

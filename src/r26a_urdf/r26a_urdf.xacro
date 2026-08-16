@@ -218,28 +218,28 @@
   <!-- Gazebo-specific sensor tags are removed here so the URDF/Xacro preview can render the model
   cleanly. -->
 
-  <joint name="joint_omni_2" type="continuous">
-    <origin xyz="-0.383252 -0.383252 0.076" rpy="0 0 0" />
-    <parent link="base_link" />
-    <child link="omni_2_1" />
-    <axis xyz="0.707107 0.707107 -0.0" />
-  </joint>
-
   <joint name="joint_omni_1" type="continuous">
-    <origin xyz="0.383252 -0.383252 0.076" rpy="0 0 0" />
-    <parent link="base_link" />
-    <child link="omni_1_1" />
-    <axis xyz="-0.707107 0.707107 -0.0" />
-  </joint>
-
-  <joint name="joint_omni_4" type="continuous">
     <origin xyz="0.383252 0.383252 0.076" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="omni_4_1" />
     <axis xyz="-0.707107 -0.707107 0.0" />
   </joint>
 
+  <joint name="joint_omni_2" type="continuous">
+    <origin xyz="0.383252 -0.383252 0.076" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="omni_1_1" />
+    <axis xyz="-0.707107 0.707107 -0.0" />
+  </joint>
+
   <joint name="joint_omni_3" type="continuous">
+    <origin xyz="-0.383252 -0.383252 0.076" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="omni_2_1" />
+    <axis xyz="0.707107 0.707107 -0.0" />
+  </joint>
+
+  <joint name="joint_omni_4" type="continuous">
     <origin xyz="-0.383252 0.383252 0.076" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="omni_3_1" />
@@ -277,7 +277,7 @@
       <pose relative_to="r_lidar_head_1">0 0 0 0 0 0</pose>
       <always_on>true</always_on>
       <visualize>true</visualize>
-      <update_rate>10</update_rate>
+      <update_rate>100</update_rate>
       
       <!-- 変更: トピック名を絶対パスにする -->
       <topic>/scan</topic>
@@ -285,24 +285,102 @@
       <lidar>
         <scan>
           <horizontal>
-            <samples>360</samples>
+            <samples>200</samples>
             <resolution>1.0</resolution>
             <min_angle>-3.14159</min_angle>
             <max_angle>3.14159</max_angle>
           </horizontal>
+          <vertical>
+            <samples>50</samples>
+            <resolution>1.0</resolution>
+            <min_angle>-1.570796</min_angle>
+            <max_angle>0.0</max_angle>
+          </vertical>
         </scan>
         <range>
-          <min>0.12</min>
-          <max>10.0</max>
-          <resolution>0.01</resolution>
+          <min>0.05</min>
+          <max>20.0</max>
+          <resolution>0.0045</resolution>
         </range>
         <noise>
           <type>gaussian</type>
           <mean>0.0</mean>
-          <stddev>0.01</stddev>
+          <stddev>0.02</stddev>
         </noise>
       </lidar>
     </sensor>
+  </gazebo>
+
+  <!-- Wheel Friction settings for smooth Gazebo Omni-wheel sliding -->
+  <gazebo reference="omni_1_1">
+    <mu1>0.8</mu1>
+    <mu2>0.01</mu2>
+    <fdir1>0.707107 0.707107 0</fdir1>
+  </gazebo>
+  <gazebo reference="omni_2_1">
+    <mu1>0.8</mu1>
+    <mu2>0.01</mu2>
+    <fdir1>-0.707107 0.707107 0</fdir1>
+  </gazebo>
+  <gazebo reference="omni_3_1">
+    <mu1>0.8</mu1>
+    <mu2>0.01</mu2>
+    <fdir1>-0.707107 -0.707107 0</fdir1>
+  </gazebo>
+  <gazebo reference="omni_4_1">
+    <mu1>0.8</mu1>
+    <mu2>0.01</mu2>
+    <fdir1>0.707107 -0.707107 0</fdir1>
+  </gazebo>
+
+  <!-- Gazebo Harmonic Plugins -->
+  <gazebo>
+    <!-- Joint Controllers for individual wheel velocity control -->
+    <plugin
+      filename="gz-sim-joint-controller-system"
+      name="gz::sim::systems::JointController">
+      <joint_name>joint_omni_1</joint_name>
+      <topic>/omni_1/cmd_vel</topic>
+      <sub_topic>cmd_vel</sub_topic>
+    </plugin>
+    <plugin
+      filename="gz-sim-joint-controller-system"
+      name="gz::sim::systems::JointController">
+      <joint_name>joint_omni_2</joint_name>
+      <topic>/omni_2/cmd_vel</topic>
+      <sub_topic>cmd_vel</sub_topic>
+    </plugin>
+    <plugin
+      filename="gz-sim-joint-controller-system"
+      name="gz::sim::systems::JointController">
+      <joint_name>joint_omni_3</joint_name>
+      <topic>/omni_3/cmd_vel</topic>
+      <sub_topic>cmd_vel</sub_topic>
+    </plugin>
+    <plugin
+      filename="gz-sim-joint-controller-system"
+      name="gz::sim::systems::JointController">
+      <joint_name>joint_omni_4</joint_name>
+      <topic>/omni_4/cmd_vel</topic>
+      <sub_topic>cmd_vel</sub_topic>
+    </plugin>
+
+    <!-- Joint State Publisher Plugin -->
+    <plugin
+      filename="gz-sim-joint-state-publisher-system"
+      name="gz::sim::systems::JointStatePublisher">
+      <topic>/joint_states</topic>
+    </plugin>
+
+    <!-- Odometry Publisher Plugin for Field-Oriented Control -->
+    <plugin
+      filename="gz-sim-odometry-publisher-system"
+      name="gz::sim::systems::OdometryPublisher">
+      <odom_topic>/odom</odom_topic>
+      <tf_topic>/tf</tf_topic>
+      <odom_frame>odom</odom_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+    </plugin>
   </gazebo>
 
 </robot>

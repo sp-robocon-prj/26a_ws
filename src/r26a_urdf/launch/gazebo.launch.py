@@ -46,20 +46,65 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Bridge between ROS and Gazebo (Optional, for clock or joints)
+    # Bridge between ROS and Gazebo
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         arguments=[
             '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
-            '/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan',
+            '/joint_states@sensor_msgs/msg/JointState[gz.msgs.Model',
+            '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry',
+            '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
+            '/gazebo/lidar_dense/points@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked',
+            '/omni_1/cmd_vel@std_msgs/msg/Float64]gz.msgs.Double',
+            '/omni_2/cmd_vel@std_msgs/msg/Float64]gz.msgs.Double',
+            '/omni_3/cmd_vel@std_msgs/msg/Float64]gz.msgs.Double',
+            '/omni_4/cmd_vel@std_msgs/msg/Float64]gz.msgs.Double',
         ],
         output='screen'
     )
+
+    # Inverse Kinematics Controller Nodes
+    twist2vel_node = Node(
+        package='controller',
+        executable='twist2velocity_node',
+        name='twist2velocity_node',
+        output='screen'
+    )
+
+    vel2omni_node = Node(
+        package='controller',
+        executable='velocity2omni_node',
+        name='velocity2omni_node',
+        output='screen',
+        parameters=[{
+            'chassis_type': 'omni4_x',
+            'scale': 10.0,
+            'publish_gazebo': True
+        }]
+    )
+
+    # Unitree L2 Non-Repetitive Scan Simulator Node
+    l2_sim_node = Node(
+        package='unitree_l2_sim',
+        executable='unitree_l2_node',
+        name='unitree_l2_sim_node',
+        output='screen',
+        parameters=[
+            {'input_topic': '/gazebo/lidar_dense/points'},
+            {'output_topic': '/scan_l2_points'},
+            {'update_rate': 10.0},
+            {'points_per_sec': 64000}
+        ]
+    )
+
 
     return LaunchDescription([
         node_robot_state_publisher,
         gazebo,
         spawn,
-        bridge
+        bridge,
+        twist2vel_node,
+        vel2omni_node,
+        l2_sim_node
     ])

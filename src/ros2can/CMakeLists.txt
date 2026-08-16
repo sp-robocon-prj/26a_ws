@@ -12,6 +12,7 @@ find_package(rosidl_default_generators REQUIRED)
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/UdpCanFrame.msg"
 )
+ament_export_dependencies(rosidl_default_runtime)
 
 # UDP Bridge: udp_bridge_node
 add_executable(udp_bridge_node src/udp_bridge_node.cpp)

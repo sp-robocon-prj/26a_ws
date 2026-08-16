@@ -8,22 +8,25 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/RobotVelocityCommand.msg"
   "msg/WheelVelocityCommand.msg"
 )
+ament_export_dependencies(rosidl_default_runtime)
 
 # Layer 3: twist2velocity_node
 add_executable(twist2velocity_node src/twist2velocity_node.cpp)
-ament_target_dependencies(twist2velocity_node rclcpp geometry_msgs)
+ament_target_dependencies(twist2velocity_node rclcpp geometry_msgs std_msgs nav_msgs)
 rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
 target_link_libraries(twist2velocity_node "${cpp_typesupport_target}")
 
 # Layer 2: velocity2omni_node
 add_executable(velocity2omni_node src/velocity2omni_node.cpp)
-ament_target_dependencies(velocity2omni_node rclcpp)
+ament_target_dependencies(velocity2omni_node rclcpp std_msgs)
 rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
 target_link_libraries(velocity2omni_node "${cpp_typesupport_target}")
 
