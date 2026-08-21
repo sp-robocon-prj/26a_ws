@@ -16,6 +16,7 @@ ament_export_dependencies(rosidl_default_runtime)
 
 # UDP Bridge: udp_bridge_node
 add_executable(udp_bridge_node src/udp_bridge_node.cpp)
+include_directories(include)
 ament_target_dependencies(udp_bridge_node rclcpp)
 rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
 target_link_libraries(udp_bridge_node "${cpp_typesupport_target}")
