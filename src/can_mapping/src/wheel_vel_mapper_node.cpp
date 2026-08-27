@@ -37,10 +37,7 @@ private:
   {
     for (size_t i = 0; i < msg->velocities.size() && i < board_nums_.size(); ++i) {
       ros2can::msg::UdpCanFrame frame;
-      frame.priority = priority_;
-      frame.data_type = data_type_;
-      frame.board_num = board_nums_[i];
-      frame.register_id = register_id_;
+      frame.id = (priority_ << 24) | (data_type_ << 16) | (board_nums_[i] << 8) | register_id_;
       frame.size = 4;
 
       float target_rps = static_cast<float>(msg->velocities[i]);

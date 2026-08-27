@@ -1,4 +1,4 @@
-#include <ros2can.hpp>
+#include <ros2can_node.hpp>
 
 
 ROS2CAN_Node::ROS2CAN_Node() : Node("udp_bridge_node"), sockfd_(-1), is_running_(true) {
@@ -70,16 +70,9 @@ void ROS2CAN_Node::tx_callback(const ros2can::msg::UdpCanFrame::SharedPtr msg) {
 
     UdpPacket packet;
     std::memset(&packet, 0, sizeof(packet));
-    packet.priority = msg->priority;
-    packet.data_type = msg->data_type;
-    packet.board_num = msg->board_num;
-    packet.register_id = msg->register_id;
+    packet.id = msg->id;
     packet.size = msg->size;
-        
-    for (size_t i = 0; i < 64 && i < msg->data.size(); ++i) {
-        packet.data[i] = msg->data[i];
-    }
-
+    memcpy(packet.data, msg->data.data(), std::min(static_cast<size_t>(msg->size), sizeof(packet.data)));
     struct sockaddr_in remote_addr;
     std::memset(&remote_addr, 0, sizeof(remote_addr));
     remote_addr.sin_family = AF_INET;
@@ -105,15 +98,11 @@ void ROS2CAN_Node::rx_thread_func() {
 
     while (is_running_ && rclcpp::ok()) {
         ssize_t n = recvfrom(sockfd_, &packet, sizeof(packet), 0, (struct sockaddr *)&client_addr, &client_len);
-        
         if (n == sizeof(packet)) {
             ros2can::msg::UdpCanFrame msg;
-            msg.priority = packet.priority;
-            msg.data_type = packet.data_type;
-            msg.board_num = packet.board_num;
-            msg.register_id = packet.register_id;
+            msg.id = packet.id;
             msg.size = packet.size;
-            memcpy(msg.data.data(), packet.data, msg.size);
+            memcpy(msg.data.data(), packet.data, 32);
             can_rx_publisher_->publish(msg);
         } else if (n > 0) {
             RCLCPP_WARN(this->get_logger(), "Received packet of unexpected size: %zd bytes (expected %zu)", n, sizeof(packet));

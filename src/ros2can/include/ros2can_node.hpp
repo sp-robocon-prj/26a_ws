@@ -1,5 +1,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <ros2can/msg/udp_can_frame.hpp>
+#include <ros2can/msg/bldc_driver.hpp>
+
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -16,20 +18,24 @@ struct UdpPacket {
 };
 #pragma pack(pop)
 
-class UdpBridgeNode : public rclcpp::Node {
+class ROS2CAN_Node : public rclcpp::Node {
 public:
-    UdpBridgeNode();
-    ~UdpBridgeNode();
+    ROS2CAN_Node();
+    ~ROS2CAN_Node();
 private:
     int sockfd_;
     bool is_running_;
     std::string remote_ip_;
     int remote_port_;
     std::thread rx_thread_;
-    rclcpp::Publisher<ros2can::msg::UdpCanFrame>::SharedPtr publisher_;
-    rclcpp::Subscription<ros2can::msg::UdpCanFrame>::SharedPtr subscription_;
+    rclcpp::Subscription<ros2can::msg::UdpCanFrame>::SharedPtr can_tx_subscription_;
+    rclcpp::Publisher<ros2can::msg::UdpCanFrame>::SharedPtr can_rx_publisher_;
+
+    rclcpp::Subscription<ros2can::msg::BLDCDriver>::SharedPtr bldc_tx_subscription_;
+    rclcpp::Publisher<ros2can::msg::BLDCDriver>::SharedPtr bldc_rx_publisher_;
 
     void tx_packet();
     void tx_callback(const ros2can::msg::UdpCanFrame::SharedPtr msg);
+    void BLDC_callback(const ros2can::msg::BLDCDriver::SharedPtr msg);
     void rx_thread_func();
 };
