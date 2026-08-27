@@ -41,7 +41,7 @@ private:
       frame.data_type = data_type_;
       frame.board_num = board_nums_[i];
       frame.register_id = register_id_;
-      frame.dlc = 4;
+      frame.size = 4;
 
       float target_rps = static_cast<float>(msg->velocities[i]);
       

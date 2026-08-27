@@ -12,9 +12,15 @@ ROS2CAN_Node::ROS2CAN_Node() : Node("udp_bridge_node"), sockfd_(-1), is_running_
     remote_ip_ = this->get_parameter("remote_ip").as_string();
     remote_port_ = this->get_parameter("remote_port").as_int();
 
-    publisher_ = this->create_publisher<ros2can::msg::UdpCanFrame>("udp_can_rx", 10);
-    subscription_ = this->create_subscription<ros2can::msg::UdpCanFrame>(
-            "udp_can_tx", 10, std::bind(&ROS2CAN_Node::tx_callback, this, std::placeholders::_1)
+    can_rx_publisher_ = this->create_publisher<ros2can::msg::UdpCanFrame>("udp_can_rx", 10);
+
+    can_tx_subscription_ = this->create_subscription<ros2can::msg::UdpCanFrame>(
+        "udp_can_tx", 10, std::bind(&ROS2CAN_Node::tx_callback, this, std::placeholders::_1)
+    );
+
+    bldc_rx_publisher_ = this->create_publisher<ros2can::msg::BLDCDriver>("BLDC_RX", 10);
+    bldc_tx_subscription_ = this->create_subscription<ros2can::msg::BLDCDriver>(
+            "BLDC_TX", 10, std::bind(&ROS2CAN_Node::BLDC_callback, this, std::placeholders::_1)
     );
 
     // Setup UDP Socket
@@ -87,6 +93,11 @@ void ROS2CAN_Node::tx_callback(const ros2can::msg::UdpCanFrame::SharedPtr msg) {
     }
 }
 
+void ROS2CAN_Node::BLDC_callback(const ros2can::msg::BLDCDriver::SharedPtr msg) {
+  RCLCPP_WARN(this->get_logger(), "Received BLDCDriver message: board_num=%d, rps_target=%d, angle_target=%d",
+        msg->board_num, msg->rps_target, msg->angle_target);
+}
+
 void ROS2CAN_Node::rx_thread_func() {
     UdpPacket packet;
     struct sockaddr_in client_addr;
@@ -103,7 +114,7 @@ void ROS2CAN_Node::rx_thread_func() {
             msg.register_id = packet.register_id;
             msg.size = packet.size;
             memcpy(msg.data.data(), packet.data, msg.size);
-            publisher_->publish(msg);
+            can_rx_publisher_->publish(msg);
         } else if (n > 0) {
             RCLCPP_WARN(this->get_logger(), "Received packet of unexpected size: %zd bytes (expected %zu)", n, sizeof(packet));
         }

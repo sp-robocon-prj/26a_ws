@@ -10,11 +10,8 @@
 
 #pragma pack(push, 1)
 struct UdpPacket {
-    uint8_t  priority;     
-    uint8_t  data_type;    
-    uint8_t  board_num;    
-    uint16_t register_id;  
-    uint8_t  dlc;          
+    uint32_t id;
+    uint32_t size;          
     uint8_t  data[64];     
 };
 #pragma pack(pop)
