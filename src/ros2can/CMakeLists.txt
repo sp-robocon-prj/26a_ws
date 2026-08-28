@@ -10,15 +10,17 @@ find_package(rclcpp REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/BLDCDriver.msg"
   "msg/UdpCanFrame.msg"
 )
 ament_export_dependencies(rosidl_default_runtime)
 
-# UDP Bridge: udp_bridge_node
-add_executable(udp_bridge_node src/udp_bridge_node.cpp)
-ament_target_dependencies(udp_bridge_node rclcpp)
+# UDP Bridge: ros2can
+include_directories(include)
+add_executable(ros2can_node src/ros2can_node.cpp)
+ament_target_dependencies(ros2can_node rclcpp)
 rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
-target_link_libraries(udp_bridge_node "${cpp_typesupport_target}")
+target_link_libraries(ros2can_node "${cpp_typesupport_target}")
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -29,7 +31,7 @@ endif()
 
 install(
   TARGETS
-  udp_bridge_node
+  ros2can_node
   DESTINATION
   lib/${PROJECT_NAME}
 )
