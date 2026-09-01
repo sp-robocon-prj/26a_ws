@@ -36,12 +36,23 @@ struct BLDCPacket {
 };
 #pragma pack(pop)
 
+
 #pragma pack(push, 1)
-struct PWRPacket {
+struct PWRTXPacket {
     bool pwrstatus;
     uint8_t ledstatus;
 };
 #pragma pack(pop)
+
+#pragma pack(push, 1)
+struct PWRXPacket {
+    float current;
+    float battery1_voltage;
+    float battery2_voltage;
+    float output_voltage;
+};
+#pragma pack(pop)
+
 
 
 enum class DataType : uint8_t {
