@@ -18,9 +18,14 @@ ROS2CAN_Node::ROS2CAN_Node() : Node("udp_bridge_node"), sockfd_(-1), is_running_
         "udp_can_tx", 10, std::bind(&ROS2CAN_Node::tx_callback, this, std::placeholders::_1)
     );
 
-    bldc_rx_publisher_ = this->create_publisher<ros2can::msg::BLDCDriver>("BLDC_RX", 10);
-    bldc_tx_subscription_ = this->create_subscription<ros2can::msg::BLDCDriver>(
+    bldc_rx_publisher_ = this->create_publisher<ros2can::msg::BLDCRX>("BLDC_RX", 10);
+    bldc_tx_subscription_ = this->create_subscription<ros2can::msg::BLDCTX>(
             "BLDC_TX", 10, std::bind(&ROS2CAN_Node::BLDC_callback, this, std::placeholders::_1)
+    );
+    
+    pwr_rx_publisher_ = this->create_publisher<ros2can::msg::PWRManagerRX>("PWRManager_RX", 10);
+    pwr_tx_subscription_ = this->create_subscription<ros2can::msg::PWRManagerTX>(
+            "PWRManager_TX", 10, std::bind(&ROS2CAN_Node::PWR_callback, this, std::placeholders::_1)
     );
 
     // Setup UDP Socket
@@ -53,6 +58,10 @@ ROS2CAN_Node::ROS2CAN_Node() : Node("udp_bridge_node"), sockfd_(-1), is_running_
 
     // Start receiver thread
     rx_thread_ = std::thread(&ROS2CAN_Node::rx_thread_func, this);
+    std::memset(&remote_addr, 0, sizeof(remote_addr));
+    remote_addr.sin_family = AF_INET;
+    remote_addr.sin_port = htons(remote_port_);
+    remote_addr.sin_addr.s_addr = inet_addr(remote_ip_.c_str());
 }
 
 ROS2CAN_Node::~ROS2CAN_Node() {
@@ -73,12 +82,6 @@ void ROS2CAN_Node::tx_callback(const ros2can::msg::UdpCanFrame::SharedPtr msg) {
     packet.id = msg->id;
     packet.size = msg->size;
     memcpy(packet.data, msg->data.data(), std::min(static_cast<size_t>(msg->size), sizeof(packet.data)));
-    struct sockaddr_in remote_addr;
-    std::memset(&remote_addr, 0, sizeof(remote_addr));
-    remote_addr.sin_family = AF_INET;
-    remote_addr.sin_port = htons(remote_port_);
-    remote_addr.sin_addr.s_addr = inet_addr(remote_ip_.c_str());
-
     ssize_t sent_bytes = sendto(sockfd_, &packet, sizeof(packet), 0, (const struct sockaddr *)&remote_addr, sizeof(remote_addr));
         
     if (sent_bytes < 0) {
@@ -86,10 +89,56 @@ void ROS2CAN_Node::tx_callback(const ros2can::msg::UdpCanFrame::SharedPtr msg) {
     }
 }
 
-void ROS2CAN_Node::BLDC_callback(const ros2can::msg::BLDCDriver::SharedPtr msg) {
-  RCLCPP_WARN(this->get_logger(), "Received BLDCDriver message: board_num=%d, rps_target=%d, angle_target=%d",
-        msg->board_num, msg->rps_target, msg->angle_target);
+void ROS2CAN_Node::BLDC_callback(const ros2can::msg::BLDCTX::SharedPtr msg)  {
+    UdpPacket packet;
+    std::memset(&packet, 0, sizeof(packet));
+
+    ID id;
+    id.fields.priority = msg->priority;
+    id.fields.data_type = DataType::BLCD_COMANND;
+    id.fields.board_num = msg->board_num;
+
+    BLDCPacket bldc_packet;
+    bldc_packet.mode = msg->mode;
+    bldc_packet.rps_target = msg->rps_target;
+    bldc_packet.angle_target = msg->angle_target;
+
+    packet.id = id.id;
+    packet.size = 32;
+
+    
+    memcpy(packet.data, &bldc_packet, 9);
+    ssize_t sent_bytes = sendto(sockfd_, &packet, sizeof(packet), 0, (const struct sockaddr *)&remote_addr, sizeof(remote_addr));
+
+    if (sent_bytes < 0) {
+        RCLCPP_WARN(this->get_logger(), "Failed to send UDP packet");
+    }
 }
+
+void ROS2CAN_Node::PWR_callback(const ros2can::msg::PWRManagerTX::SharedPtr msg)  {
+    UdpPacket packet;
+    std::memset(&packet, 0, sizeof(packet));
+
+    ID id;
+    id.fields.priority = msg->priority;
+    id.fields.data_type = DataType::POWERBOARD_COMANND;
+    id.fields.board_num = msg->board_num;
+
+    PWRTXPacket pwr_packet;
+    pwr_packet.pwrstatus = msg->powerstatus;
+    pwr_packet.ledstatus = msg->ledstatus;
+
+    packet.id = id.id;
+    packet.size = 32;
+    
+    memcpy(packet.data, &pwr_packet, sizeof(pwr_packet));
+    ssize_t sent_bytes = sendto(sockfd_, &packet, sizeof(packet), 0, (const struct sockaddr *)&remote_addr, sizeof(remote_addr));
+
+    if (sent_bytes < 0) {
+        RCLCPP_WARN(this->get_logger(), "Failed to send UDP packet");
+    }
+}
+
 
 void ROS2CAN_Node::rx_thread_func() {
     UdpPacket packet;
@@ -99,20 +148,30 @@ void ROS2CAN_Node::rx_thread_func() {
     while (is_running_ && rclcpp::ok()) {
         ssize_t n = recvfrom(sockfd_, &packet, sizeof(packet), 0, (struct sockaddr *)&client_addr, &client_len);
         if (n == sizeof(packet)) {
-            ros2can::msg::UdpCanFrame msg;
-            msg.id = packet.id;
-            msg.size = packet.size;
-            memcpy(msg.data.data(), packet.data, 32);
+            ID id;
+            id.id = packet.id;
+            if (id.fields.data_type == DataType::POWERBOARD_COMANND) {
+                PWRXPacket pwr_packet;
+                ros2can::msg::PWRManagerRX msg;
+                memcpy(&pwr_packet, packet.data, sizeof(pwr_packet));
+                msg.board_num = id.fields.board_num;
+                msg.current = pwr_packet.current;
+                msg.battery1_voltage = pwr_packet.battery1_voltage;
+                msg.battery2_voltage = pwr_packet.battery2_voltage;
+                msg.output_voltage = pwr_packet.output_voltage;
+                pwr_rx_publisher_->publish(msg);
+            } else {
+                ros2can::msg::UdpCanFrame msg;
+                msg.id = packet.id;
+                msg.size = packet.size;
+                memcpy(msg.data.data(), packet.data, 32);
             can_rx_publisher_->publish(msg);
+            }
+
         } else if (n > 0) {
             RCLCPP_WARN(this->get_logger(), "Received packet of unexpected size: %zd bytes (expected %zu)", n, sizeof(packet));
         }
     }
-}
-
-void ROS2CAN_Node::tx_packet() 
-{
-        // This function is not used in the current implementation.
 }
 
 int main(int argc, char **argv) {

@@ -10,7 +10,10 @@ find_package(rclcpp REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/BLDCDriver.msg"
+  "msg/BLDCTX.msg"
+  "msg/BLDCRX.msg"
+  "msg/PWRManagerTX.msg"
+  "msg/PWRManagerRX.msg"
   "msg/UdpCanFrame.msg"
 )
 ament_export_dependencies(rosidl_default_runtime)
