@@ -9,7 +9,7 @@
 class Twist2VelocityNode : public rclcpp::Node
 {
 public:
-  Twist2VelocityNode() : Node("twist2velocity_node")
+  Twist2VelocityNode() : Node("twist2velocity_node", rclcpp::NodeOptions().use_intra_process_comms(true))
   {
     this->declare_parameter<bool>("use_global_frame", true);
     this->declare_parameter<std::string>("odom_topic", "/odom");
@@ -20,7 +20,7 @@ public:
     publisher_ = this->create_publisher<controller::msg::RobotVelocityCommand>("robot_vel", 10);
 
     twist_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
-      "cmd_vel", 10, std::bind(&Twist2VelocityNode::twist_callback, this, std::placeholders::_1));
+      "/turtle1/cmd_vel", 10, std::bind(&Twist2VelocityNode::twist_callback, this, std::placeholders::_1));
 
     odom_sub_ = this->create_subscription<nav_msgs::msg::Odometry>(
       odom_topic, 10, std::bind(&Twist2VelocityNode::odom_callback, this, std::placeholders::_1));

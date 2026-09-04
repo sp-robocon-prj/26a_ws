@@ -1,7 +1,7 @@
 #include <ros2can_node.hpp>
 
 
-ROS2CAN_Node::ROS2CAN_Node() : Node("udp_bridge_node"), sockfd_(-1), is_running_(true) {
+ROS2CAN_Node::ROS2CAN_Node() : Node("udp_bridge_node", rclcpp::NodeOptions().use_intra_process_comms(true)), sockfd_(-1), is_running_(true) {
     this->declare_parameter<std::string>("local_ip", "0.0.0.0");
     this->declare_parameter<int>("local_port", 4001);
     this->declare_parameter<std::string>("remote_ip", "192.168.10.103");
