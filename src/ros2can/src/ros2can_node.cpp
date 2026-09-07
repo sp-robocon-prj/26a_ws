@@ -1,7 +1,7 @@
 #include <ros2can_node.hpp>
 
 
-ROS2CAN_Node::ROS2CAN_Node() : Node("udp_bridge_node", rclcpp::NodeOptions().use_intra_process_comms(true)), sockfd_(-1), is_running_(true) {
+ROS2CAN_Node::ROS2CAN_Node() : Node("ROS2CAN_Node"), sockfd_(-1), is_running_(true) {
     this->declare_parameter<std::string>("local_ip", "0.0.0.0");
     this->declare_parameter<int>("local_port", 4001);
     this->declare_parameter<std::string>("remote_ip", "192.168.10.103");
@@ -18,14 +18,14 @@ ROS2CAN_Node::ROS2CAN_Node() : Node("udp_bridge_node", rclcpp::NodeOptions().use
         "udp_can_tx", 10, std::bind(&ROS2CAN_Node::tx_callback, this, std::placeholders::_1)
     );
 
-    bldc_rx_publisher_ = this->create_publisher<ros2can::msg::BLDCRX>("BLDC_RX", 10);
+    bldc_rx_publisher_ = this->create_publisher<ros2can::msg::BLDCRX>("BLDC/RX", 10);
     bldc_tx_subscription_ = this->create_subscription<ros2can::msg::BLDCTX>(
-            "BLDC_TX", 10, std::bind(&ROS2CAN_Node::BLDC_callback, this, std::placeholders::_1)
+            "BLDC/TX", 10, std::bind(&ROS2CAN_Node::BLDC_callback, this, std::placeholders::_1)
     );
     
-    pwr_rx_publisher_ = this->create_publisher<ros2can::msg::PWRManagerRX>("PWRManager_RX", 10);
+    pwr_rx_publisher_ = this->create_publisher<ros2can::msg::PWRManagerRX>("PWRManager/RX", 10);
     pwr_tx_subscription_ = this->create_subscription<ros2can::msg::PWRManagerTX>(
-            "PWRManager_TX", 10, std::bind(&ROS2CAN_Node::PWR_callback, this, std::placeholders::_1)
+            "PWRManager/TX", 10, std::bind(&ROS2CAN_Node::PWR_callback, this, std::placeholders::_1)
     );
 
     // Setup UDP Socket
@@ -100,12 +100,11 @@ void ROS2CAN_Node::BLDC_callback(const ros2can::msg::BLDCTX::SharedPtr msg)  {
 
     BLDCPacket bldc_packet;
     bldc_packet.mode = msg->mode;
-    bldc_packet.rps_target = msg->rps_target;
+    bldc_packet.rps_target = msg->rps_target*10;
     bldc_packet.angle_target = msg->angle_target;
 
     packet.id = id.id;
     packet.size = 32;
-
     
     memcpy(packet.data, &bldc_packet, 9);
     ssize_t sent_bytes = sendto(sockfd_, &packet, sizeof(packet), 0, (const struct sockaddr *)&remote_addr, sizeof(remote_addr));

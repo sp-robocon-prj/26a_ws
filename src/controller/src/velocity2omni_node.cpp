@@ -10,7 +10,7 @@ Velocity2OmniNode::Velocity2OmniNode() : Node("velocity2omni_node", rclcpp::Node
 
   publisher_ = this->create_publisher<controller::msg::WheelVelocityCommand>("wheel_vel", 10);
 
-  bldc_tx_ = this->create_publisher<ros2can::msg::BLDCTX>("BLDC_TX", 10);
+  bldc_tx_ = this->create_publisher<ros2can::msg::BLDCTX>("BLDC/TX", 10);
 
   subscription_ = this->create_subscription<controller::msg::RobotVelocityCommand>(
     "robot_vel", 10, std::bind(&Velocity2OmniNode::robot_vel_callback, this, std::placeholders::_1));
