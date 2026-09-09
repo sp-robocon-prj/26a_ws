@@ -19,7 +19,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 ament_export_dependencies(rosidl_default_runtime)
 
 # UDP Bridge: ros2can
-include_directories(include)
+include_directories(include msg/include)
 add_executable(ros2can_node src/ros2can_node.cpp)
 ament_target_dependencies(ros2can_node rclcpp)
 rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")

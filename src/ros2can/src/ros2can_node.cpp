@@ -98,7 +98,7 @@ void ROS2CAN_Node::BLDC_callback(const ros2can::msg::BLDCTX::SharedPtr msg)  {
     id.fields.data_type = DataType::BLDC_COMMAND;
     id.fields.board_num = msg->board_num;
 
-    BLDCPacket bldc_packet;
+    BLDC_CANPacket bldc_packet;
     bldc_packet.mode = msg->mode;
     bldc_packet.rps_target = msg->rps_target*10;
     bldc_packet.angle_target = msg->angle_target;
@@ -123,7 +123,7 @@ void ROS2CAN_Node::PWR_callback(const ros2can::msg::PWRManagerTX::SharedPtr msg)
     id.fields.data_type = DataType::POWERBOARD_COMANND;
     id.fields.board_num = msg->board_num;
 
-    PWRTXPacket pwr_packet;
+    PWRTX_CANPacket pwr_packet;
     pwr_packet.pwrstatus = msg->powerstatus;
     pwr_packet.ledstatus = msg->ledstatus;
 
@@ -150,7 +150,7 @@ void ROS2CAN_Node::rx_thread_func() {
             ID id;
             id.id = packet.id;
             if (id.fields.data_type == DataType::POWERBOARD_COMANND) {
-                PWRXPacket pwr_packet;
+                PWRX_CANPacket pwr_packet;
                 ros2can::msg::PWRManagerRX msg;
                 memcpy(&pwr_packet, packet.data, sizeof(pwr_packet));
                 msg.board_num = id.fields.board_num;
