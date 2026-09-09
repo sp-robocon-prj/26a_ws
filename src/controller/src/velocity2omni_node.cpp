@@ -55,19 +55,19 @@ void Velocity2OmniNode::robot_vel_callback(const controller::msg::RobotVelocityC
     TX.priority = 1; // Set priority as needed
     
     TX.board_num = 0; // Set board number as needed
-    TX.rps_target = cmd.velocities[0]; // omni_1: FL (前左)
+    TX.rps_target = (int16_t)cmd.velocities[0]; // omni_1: FL (前左)
     bldc_tx_->publish(TX);
 
     TX.board_num = 1; // Set board number as needed
-    TX.rps_target = cmd.velocities[1]; // omni_2: FR (前右)
+    TX.rps_target = (int16_t)cmd.velocities[1]; // omni_2: FR (前右)
     bldc_tx_->publish(TX);
 
     TX.board_num = 2; // Set board number as needed
-    TX.rps_target = cmd.velocities[2]; // omni_3: RR (後右)
+    TX.rps_target = (int16_t)cmd.velocities[2]; // omni_3: RR (後右)
     bldc_tx_->publish(TX);
 
     TX.board_num = 3; // Set board number as needed
-    TX.rps_target = cmd.velocities[3]; // omni_4: RL (後左)
+    TX.rps_target = (int16_t)cmd.velocities[3]; // omni_4: RL (後左)
     bldc_tx_->publish(TX);
   }
 }

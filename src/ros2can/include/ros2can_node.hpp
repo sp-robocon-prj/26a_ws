@@ -58,7 +58,7 @@ struct PWRXPacket {
 enum class DataType : uint8_t {
     COMMON_COMAND = 0x01,
     POWERBOARD_COMANND = 0x02,
-    BLCD_COMANND = 0x03,
+    BLDC_COMMAND = 0x03,
     MOTORBOARDC_COMAND = 0x04,
     // Add other data types as needed
 };
