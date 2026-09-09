@@ -1,0 +1,32 @@
+# config/wt901c485_params.yaml
+# Parameters for wt901c485_node (C++) and wt901c485_py_node (Python)
+# Adjust port / baud / modbus_address to match your hardware.
+
+wt901c485_node:
+  ros__parameters:
+    # Serial port of your USB-RS485 adapter
+    port: "/dev/ttyUSB1"
+
+    # Baud rate — must match sensor setting (factory default: 9600)
+    baud: 115200
+
+    # Modbus slave address in decimal (factory default: 0x50 = 80)
+    modbus_address: 80
+
+    # TF frame published on imu/data header and TF tree
+    frame_id: "imu_link"
+
+    # Data poll rate in Hz (sensor supports up to 200 Hz, default 10 Hz)
+    rate_hz: 50.0
+
+    # Broadcast TF: base_link → imu_link
+    publish_tf: true
+
+wt901c485_py_node:
+  ros__parameters:
+    port: "/dev/ttyUSB1"
+    baud: 115200
+    modbus_address: 80
+    frame_id: "imu_link"
+    rate_hz: 50.0
+    publish_tf: true
