@@ -95,7 +95,7 @@ void ROS2CAN_Node::BLDC_callback(const ros2can::msg::BLDCTX::SharedPtr msg)  {
 
     ID id;
     id.fields.priority = msg->priority;
-    id.fields.data_type = DataType::BLCD_COMANND;
+    id.fields.data_type = DataType::BLDC_COMMAND;
     id.fields.board_num = msg->board_num;
 
     BLDCPacket bldc_packet;
