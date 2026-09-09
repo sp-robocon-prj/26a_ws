@@ -76,8 +76,11 @@ ROS2CAN_Node::~ROS2CAN_Node() {
 
 void ROS2CAN_Node::tx_callback(const ros2can::msg::UdpCanFrame::SharedPtr msg) {
     if (sockfd_ < 0) return;
-
     UdpPacket packet;
+    packet.header[0] = 'C';
+    packet.header[1] = 'A';
+    packet.header[2] = 'N';
+
     std::memset(&packet, 0, sizeof(packet));
     packet.id = msg->id;
     packet.size = msg->size;
@@ -90,8 +93,12 @@ void ROS2CAN_Node::tx_callback(const ros2can::msg::UdpCanFrame::SharedPtr msg) {
 }
 
 void ROS2CAN_Node::BLDC_callback(const ros2can::msg::BLDCTX::SharedPtr msg)  {
+    if (sockfd_ < 0) return;
     UdpPacket packet;
     std::memset(&packet, 0, sizeof(packet));
+    packet.header[0] = 'C';
+    packet.header[1] = 'A';
+    packet.header[2] = 'N';
 
     ID id;
     id.fields.priority = msg->priority;
@@ -115,8 +122,12 @@ void ROS2CAN_Node::BLDC_callback(const ros2can::msg::BLDCTX::SharedPtr msg)  {
 }
 
 void ROS2CAN_Node::PWR_callback(const ros2can::msg::PWRManagerTX::SharedPtr msg)  {
+    if (sockfd_ < 0) return;
     UdpPacket packet;
     std::memset(&packet, 0, sizeof(packet));
+    packet.header[0] = 'C';
+    packet.header[1] = 'A';
+    packet.header[2] = 'N';
 
     ID id;
     id.fields.priority = msg->priority;
@@ -145,8 +156,8 @@ void ROS2CAN_Node::rx_thread_func() {
     socklen_t client_len = sizeof(client_addr);
 
     while (is_running_ && rclcpp::ok()) {
-        ssize_t n = recvfrom(sockfd_, &packet, sizeof(packet), 0, (struct sockaddr *)&client_addr, &client_len);
-        if (n == sizeof(packet)) {
+        recvfrom(sockfd_, &packet, sizeof(packet), 0, (struct sockaddr *)&client_addr, &client_len);
+        if (memcmp(packet.header, "CAN", 3) == 0) {
             ID id;
             id.id = packet.id;
             if (id.fields.data_type == DataType::POWERBOARD_COMANND) {
@@ -167,8 +178,8 @@ void ROS2CAN_Node::rx_thread_func() {
             can_rx_publisher_->publish(msg);
             }
 
-        } else if (n > 0) {
-            RCLCPP_WARN(this->get_logger(), "Received packet of unexpected size: %zd bytes (expected %zu)", n, sizeof(packet));
+        } else {
+            RCLCPP_WARN(this->get_logger(), "Received packet is not CANFD format");
         }
     }
 }
