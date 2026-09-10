@@ -5,7 +5,7 @@
 Velocity2OmniNode::Velocity2OmniNode() : Node("velocity2omni_node", rclcpp::NodeOptions().use_intra_process_comms(true))
 {
   this->declare_parameter<std::string>("chassis_type", "omni4_x");
-  this->declare_parameter<double>("scale", 10.0);
+  this->declare_parameter<double>("scale", 1.0);
   this->declare_parameter<bool>("publish_gazebo", true);
 
   publisher_ = this->create_publisher<controller::msg::WheelVelocityCommand>("wheel_vel", 10);
@@ -53,21 +53,23 @@ void Velocity2OmniNode::robot_vel_callback(const controller::msg::RobotVelocityC
   if (publish_gazebo && cmd.velocities.size() >= 4) {
     ros2can::msg::BLDCTX TX;
     TX.priority = 1; // Set priority as needed
+    TX.gear_ratio = 19.2;
+    TX.encoder_resolution = 4096;
     
     TX.board_num = 0; // Set board number as needed
-    TX.rps_target = (int16_t)cmd.velocities[0]; // omni_1: FL (前左)
+    TX.rps_target = cmd.velocities[0]; // omni_1: FL (前左)
     bldc_tx_->publish(TX);
 
     TX.board_num = 1; // Set board number as needed
-    TX.rps_target = (int16_t)cmd.velocities[1]; // omni_2: FR (前右)
+    TX.rps_target = cmd.velocities[1]; // omni_2: FR (前右)
     bldc_tx_->publish(TX);
 
     TX.board_num = 2; // Set board number as needed
-    TX.rps_target = (int16_t)cmd.velocities[2]; // omni_3: RR (後右)
+    TX.rps_target = cmd.velocities[2]; // omni_3: RR (後右)
     bldc_tx_->publish(TX);
 
     TX.board_num = 3; // Set board number as needed
-    TX.rps_target = (int16_t)cmd.velocities[3]; // omni_4: RL (後左)
+    TX.rps_target = cmd.velocities[3]; // omni_4: RL (後左)
     bldc_tx_->publish(TX);
   }
 }

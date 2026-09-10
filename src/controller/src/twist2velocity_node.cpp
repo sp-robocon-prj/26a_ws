@@ -62,14 +62,14 @@ private:
     RCLCPP_INFO(this->get_logger(), "Global frame mode changed to: %s",
                 use_global_frame_ ? "ENABLED" : "DISABLED");
   }
-
+  
   void twist_callback(const geometry_msgs::msg::Twist::SharedPtr msg)
   {
     use_global_frame_ = this->get_parameter("use_global_frame").as_bool();
 
     double vx_in = msg->linear.x;
     double vy_in = msg->linear.y;
-    double omega = msg->angular.z;
+    double omega = msg->linear.z;
 
     double vx_out = vx_in;
     double vy_out = vy_in;

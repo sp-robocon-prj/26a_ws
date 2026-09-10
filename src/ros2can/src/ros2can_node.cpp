@@ -105,15 +105,20 @@ void ROS2CAN_Node::BLDC_callback(const ros2can::msg::BLDCTX::SharedPtr msg)  {
     id.fields.data_type = DataType::BLDC_COMMAND;
     id.fields.board_num = msg->board_num;
 
-    BLDC_CANPacket bldc_packet;
-    bldc_packet.mode = msg->mode;
-    bldc_packet.rps_target = msg->rps_target*10;
+    BLDCTX_CANPacket bldc_packet;
+    bldc_packet.rps_target = msg->rps_target;
     bldc_packet.angle_target = msg->angle_target;
+    bldc_packet.gear_ratio = msg->gear_ratio;
+    bldc_packet.encoder_resolution = msg->encoder_resolution;
+    bldc_packet.en_limit_sw = msg->en_limit_sw;
+
+    bldc_packet.monitor_flag = msg->monitor_flag;
+    bldc_packet.monitor_freq = msg->monitor_freq;
 
     packet.id = id.id;
-    packet.size = 32;
+    packet.size = sizeof(BLDCTX_CANPacket);
     
-    memcpy(packet.data, &bldc_packet, 9);
+    memcpy(packet.data, &bldc_packet, sizeof(bldc_packet));
     ssize_t sent_bytes = sendto(sockfd_, &packet, sizeof(packet), 0, (const struct sockaddr *)&remote_addr, sizeof(remote_addr));
 
     if (sent_bytes < 0) {
@@ -131,15 +136,20 @@ void ROS2CAN_Node::PWR_callback(const ros2can::msg::PWRManagerTX::SharedPtr msg)
 
     ID id;
     id.fields.priority = msg->priority;
-    id.fields.data_type = DataType::POWERBOARD_COMANND;
+    id.fields.data_type = DataType::POWERBOARD_COMMAND;
     id.fields.board_num = msg->board_num;
 
     PWRTX_CANPacket pwr_packet;
     pwr_packet.pwrstatus = msg->powerstatus;
     pwr_packet.ledstatus = msg->ledstatus;
+    pwr_packet.current_limit = msg->current_limit;
+    pwr_packet.battery_limit = msg->battery_limit;
+
+    pwr_packet.monitor_flag = msg->monitor_flag;
+    pwr_packet.monitor_freq = msg->monitor_freq;
 
     packet.id = id.id;
-    packet.size = 32;
+    packet.size = sizeof(PWRTX_CANPacket);
     
     memcpy(packet.data, &pwr_packet, sizeof(pwr_packet));
     ssize_t sent_bytes = sendto(sockfd_, &packet, sizeof(packet), 0, (const struct sockaddr *)&remote_addr, sizeof(remote_addr));
@@ -160,7 +170,7 @@ void ROS2CAN_Node::rx_thread_func() {
         if (memcmp(packet.header, "CAN", 3) == 0) {
             ID id;
             id.id = packet.id;
-            if (id.fields.data_type == DataType::POWERBOARD_COMANND) {
+            if (id.fields.data_type == DataType::POWERBOARD_COMMAND) {
                 PWRX_CANPacket pwr_packet;
                 ros2can::msg::PWRManagerRX msg;
                 memcpy(&pwr_packet, packet.data, sizeof(pwr_packet));
