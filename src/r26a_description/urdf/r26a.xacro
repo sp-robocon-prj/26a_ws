@@ -1,0 +1,426 @@
+<?xml version="1.0" ?>
+<robot name="r26a" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find r26a_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find r26a_description)/urdf/r26a.ros2control" />
+<xacro:include filename="$(find r26a_description)/urdf/r26a.gazebo" />
+<link name="base_link">
+  <inertial>
+    <origin xyz="-0.03168375692015344 -0.032500726504693864 0.2359028738809564" rpy="0 0 0"/>
+    <mass value="6.308685347440771"/>
+    <inertia ixx="0.875722" iyy="1.013444" izz="1.071308" ixy="-0.065785" iyz="-0.009622" ixz="0.024378"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="omni_0_1">
+  <inertial>
+    <origin xyz="0.02344037533707205 -0.023440727326830946 -1.096345236817342e-15" rpy="0 0 0"/>
+    <mass value="2.8563365432986654"/>
+    <inertia ixx="0.006591" iyy="0.006591" izz="0.004934" ixy="-0.001658" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.329839 0.32978 -0.0735" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/omni_0_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.329839 0.32978 -0.0735" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/omni_0_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="omni_1_1">
+  <inertial>
+    <origin xyz="0.02344037533707194 0.023440118082205808 -1.096345236817342e-15" rpy="0 0 0"/>
+    <mass value="2.8563365432986654"/>
+    <inertia ixx="0.006591" iyy="0.006591" izz="0.004934" ixy="0.001658" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.329839 -0.323587 -0.0735" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/omni_1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.329839 -0.323587 -0.0735" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/omni_1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="omni_2_1">
+  <inertial>
+    <origin xyz="-0.02344047007196709 0.023440118082207084 -3.3306690738754696e-16" rpy="0 0 0"/>
+    <mass value="2.8563365432986654"/>
+    <inertia ixx="0.006591" iyy="0.006591" izz="0.004934" ixy="-0.001658" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.323528 -0.323587 -0.0735" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/omni_2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.323528 -0.323587 -0.0735" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/omni_2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="omni_3_1">
+  <inertial>
+    <origin xyz="-0.023440470071965425 -0.02344072732683139 -2.914335439641036e-16" rpy="0 0 0"/>
+    <mass value="2.8563365432986654"/>
+    <inertia ixx="0.006591" iyy="0.006591" izz="0.004934" ixy="0.001658" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.323528 0.32978 -0.0735" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/omni_3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.323528 0.32978 -0.0735" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/omni_3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="roja_frame_1">
+  <inertial>
+    <origin xyz="-0.4022109486773135 0.3102709468911061 0.44326734962699127" rpy="0 0 0"/>
+    <mass value="5.420420342219616"/>
+    <inertia ixx="1.274196" iyy="1.243385" izz="0.517105" ixy="-0.001243" iyz="-0.272952" ixz="-0.002769"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.406331 0.181664 -0.431" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/roja_frame_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.406331 0.181664 -0.431" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/roja_frame_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="lidar_urdf_1">
+  <inertial>
+    <origin xyz="-3.66537550977597e-07 -0.006339534400564506 -0.013594395706134743" rpy="0 0 0"/>
+    <mass value="0.22902210444669585"/>
+    <inertia ixx="6.9e-05" iyy="7.5e-05" izz="9.7e-05" ixy="-0.0" iyz="1.3e-05" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.347295 0.360296 -0.292161" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/lidar_urdf_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.347295 0.360296 -0.292161" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/lidar_urdf_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="cam1_1">
+  <inertial>
+    <origin xyz="0.00046307097252418217 -0.014798333613409403 -0.01673327243285405" rpy="0 0 0"/>
+    <mass value="0.185606300457466"/>
+    <inertia ixx="4.2e-05" iyy="0.000137" izz="0.000121" ixy="-1e-06" iyz="-3e-06" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.34253 0.247984 -0.7943" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/cam1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.34253 0.247984 -0.7943" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/cam1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="cam1_cam_1">
+  <inertial>
+    <origin xyz="-0.02974999189282007 0.009806467863223478 -1.5918734730391293e-07" rpy="0 0 0"/>
+    <mass value="0.017157190826826874"/>
+    <inertia ixx="1e-06" iyy="1.4e-05" izz="1.5e-05" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.31278 0.276184 -0.7733" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/cam1_cam_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.31278 0.276184 -0.7733" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/cam1_cam_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="l_roller_frame_1">
+  <inertial>
+    <origin xyz="0.033650450176803126 -0.03397275836580288 0.1410467363770581" rpy="0 0 0"/>
+    <mass value="4.041367806112329"/>
+    <inertia ixx="0.127099" iyy="0.119605" izz="0.144166" ixy="-0.003684" iyz="0.024888" ixz="-0.002617"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.292025 0.160608 -0.8695" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/l_roller_frame_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.292025 0.160608 -0.8695" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/l_roller_frame_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="r_roller_frame_1">
+  <inertial>
+    <origin xyz="-0.033650540445284316 -0.03397275715432582 0.14104673637702214" rpy="0 0 0"/>
+    <mass value="4.0413678061084966"/>
+    <inertia ixx="0.127099" iyy="0.119605" izz="0.144166" ixy="0.003684" iyz="0.024888" ixz="0.002617"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.298336 0.160608 -0.8695" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/r_roller_frame_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.298336 0.160608 -0.8695" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/r_roller_frame_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="l_roller_1">
+  <inertial>
+    <origin xyz="0.17080648979943058 -0.0006543169029711859 0.0009848274860233541" rpy="0 0 0"/>
+    <mass value="4.685495614354369"/>
+    <inertia ixx="0.008457" iyy="0.055031" izz="0.051671" ixy="4.2e-05" iyz="-0.000825" ixz="-9.5e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.440203 0.28743 -1.075" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/l_roller_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.440203 0.28743 -1.075" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/l_roller_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="r_roller_1">
+  <inertial>
+    <origin xyz="-0.17080658027428852 -0.0005659926259633519 0.001038102739798763" rpy="0 0 0"/>
+    <mass value="4.685495608549223"/>
+    <inertia ixx="0.008457" iyy="0.054862" izz="0.05184" ixy="-3.3e-05" iyz="-0.001104" ixz="9.9e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.446514 0.28743 -1.075" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/r_roller_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.446514 0.28743 -1.075" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/r_roller_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="r_roller_fabric_1">
+  <inertial>
+    <origin xyz="0.22017441435281188 0.19098089483330266 -0.990195792601456" rpy="0 0 0"/>
+    <mass value="2.559068730856379"/>
+    <inertia ixx="0.030249" iyy="0.012132" izz="0.042117" ixy="-0.00416" iyz="0.000327" ixz="1.9e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.07 0.2475 -1.904212" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/r_roller_fabric_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.07 0.2475 -1.904212" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/r_roller_fabric_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="l_roller_fabric_1">
+  <inertial>
+    <origin xyz="-0.21386350462146214 0.19098089362188397 -0.9901957926014566" rpy="0 0 0"/>
+    <mass value="2.5590687308563806"/>
+    <inertia ixx="0.030249" iyy="0.012132" izz="0.042117" ixy="0.00416" iyz="0.000327" ixz="-1.9e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.07 0.2475 -1.904212" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/l_roller_fabric_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.07 0.2475 -1.904212" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find r26a_description)/meshes/l_roller_fabric_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="omni_0" type="continuous">
+  <origin xyz="0.329839 -0.32978 0.0735" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="omni_0_1"/>
+  <axis xyz="0.707107 -0.707107 0.0"/>
+</joint>
+
+<joint name="omni_1" type="continuous">
+  <origin xyz="0.329839 0.323587 0.0735" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="omni_1_1"/>
+  <axis xyz="0.707107 0.707107 -0.0"/>
+</joint>
+
+<joint name="omni_2" type="continuous">
+  <origin xyz="-0.323528 0.323587 0.0735" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="omni_2_1"/>
+  <axis xyz="-0.707107 0.707107 -0.0"/>
+</joint>
+
+<joint name="omni_3" type="continuous">
+  <origin xyz="-0.323528 -0.32978 0.0735" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="omni_3_1"/>
+  <axis xyz="-0.707107 -0.707107 -0.0"/>
+</joint>
+
+<joint name="roja" type="prismatic">
+  <origin xyz="0.406331 -0.181664 0.431" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="roja_frame_1"/>
+  <axis xyz="0.0 0.0 1.0"/>
+  <limit upper="0.624" lower="0.0" effort="100" velocity="100"/>
+</joint>
+
+<joint name="lidar" type="fixed">
+  <origin xyz="-0.347295 -0.360296 0.292161" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="lidar_urdf_1"/>
+</joint>
+
+<joint name="cam1" type="revolute">
+  <origin xyz="-0.34253 -0.247984 0.7943" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="cam1_1"/>
+  <axis xyz="-1.0 0.0 -0.0"/>
+  <limit upper="0.872665" lower="-1.047198" effort="100" velocity="100"/>
+</joint>
+
+<joint name="cam1_cam" type="fixed">
+  <origin xyz="0.02975 -0.0282 -0.021" rpy="0 0 0"/>
+  <parent link="cam1_1"/>
+  <child link="cam1_cam_1"/>
+</joint>
+
+<joint name="l_roller_z" type="revolute">
+  <origin xyz="-0.698356 0.021056 0.4385" rpy="0 0 0"/>
+  <parent link="roja_frame_1"/>
+  <child link="l_roller_frame_1"/>
+  <axis xyz="0.0 -0.0 1.0"/>
+  <limit upper="0.261799" lower="-0.523599" effort="100" velocity="100"/>
+</joint>
+
+<joint name="r_roller_z" type="revolute">
+  <origin xyz="-0.107995 0.021056 0.4385" rpy="0 0 0"/>
+  <parent link="roja_frame_1"/>
+  <child link="r_roller_frame_1"/>
+  <axis xyz="-0.0 -0.0 1.0"/>
+  <limit upper="0.523599" lower="-0.261799" effort="100" velocity="100"/>
+</joint>
+
+<joint name="l_roller_x" type="revolute">
+  <origin xyz="-0.148178 -0.126822 0.2055" rpy="0 0 0"/>
+  <parent link="l_roller_frame_1"/>
+  <child link="l_roller_1"/>
+  <axis xyz="-1.0 -0.0 -0.0"/>
+  <limit upper="0.436332" lower="0.0" effort="100" velocity="100"/>
+</joint>
+
+<joint name="r_roller_x" type="revolute">
+  <origin xyz="0.148178 -0.126822 0.2055" rpy="0 0 0"/>
+  <parent link="r_roller_frame_1"/>
+  <child link="r_roller_1"/>
+  <axis xyz="-1.0 0.0 -0.0"/>
+  <limit upper="0.436332" lower="0.0" effort="100" velocity="100"/>
+</joint>
+
+<joint name="r_roller_fabric" type="prismatic">
+  <origin xyz="-0.228336 -0.086892 1.034712" rpy="0 0 0"/>
+  <parent link="r_roller_frame_1"/>
+  <child link="r_roller_fabric_1"/>
+  <axis xyz="-0.0 -0.0 1.0"/>
+  <limit upper="0.08" lower="0.0" effort="100" velocity="100"/>
+</joint>
+
+<joint name="l_roller_fabric" type="prismatic">
+  <origin xyz="0.222025 -0.086892 1.034712" rpy="0 0 0"/>
+  <parent link="l_roller_frame_1"/>
+  <child link="l_roller_fabric_1"/>
+  <axis xyz="0.0 -0.0 -1.0"/>
+  <limit upper="0.0" lower="-0.08" effort="100" velocity="100"/>
+</joint>
+
+</robot>
