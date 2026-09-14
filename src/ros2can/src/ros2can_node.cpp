@@ -28,6 +28,14 @@ ROS2CAN_Node::ROS2CAN_Node() : Node("ROS2CAN_Node"), sockfd_(-1), is_running_(tr
             "PWRManager/TX", 10, std::bind(&ROS2CAN_Node::PWR_callback, this, std::placeholders::_1)
     );
 
+    motorboard_tx_subscription_ = this->create_subscription<ros2can::msg::MotorBoardTX>(
+            "MotorBoard/TX", 10, std::bind(&ROS2CAN_Node::MotorBoard_callback, this, std::placeholders::_1)
+    );
+
+    servo_tx_subscription_ = this->create_subscription<ros2can::msg::ServoTX>(
+            "Servo/TX", 10, std::bind(&ROS2CAN_Node::Servo_callback, this, std::placeholders::_1)
+    );
+
     // Setup UDP Socket
     sockfd_ = socket(AF_INET, SOCK_DGRAM, 0);
     if (sockfd_ < 0) {
@@ -159,6 +167,75 @@ void ROS2CAN_Node::PWR_callback(const ros2can::msg::PWRManagerTX::SharedPtr msg)
     }
 }
 
+void ROS2CAN_Node::Servo_callback(const ros2can::msg::ServoTX::SharedPtr msg)  {
+    if (sockfd_ < 0) return;
+    UdpPacket packet;
+    std::memset(&packet, 0, sizeof(packet));
+    packet.header[0] = 'C';
+    packet.header[1] = 'A';
+    packet.header[2] = 'N';
+
+    ID id;
+    id.fields.priority = msg->priority;
+    id.fields.data_type = DataType::MOTORBOARD_COMMAND;
+    id.fields.board_num = msg->board_num;
+
+    ServoTX_CANPacket servo_packet;
+
+    servo_packet.channel = msg->channel;
+
+    for (int i = 0; i < 3; ++i) {
+        servo_packet.position[i] = msg->position[i];
+        servo_packet.time[i] = msg->time[i];
+        servo_packet.speed[i] = msg->speed[i];
+    }
+
+    servo_packet.monitor_flag = msg->monitor_flag;
+    servo_packet.monitor_freq = msg->monitor_freq;
+
+    packet.id = id.id;
+    packet.size = sizeof(ServoTX_CANPacket);
+    
+    memcpy(packet.data, &servo_packet, sizeof(servo_packet));
+    ssize_t sent_bytes = sendto(sockfd_, &packet, sizeof(packet), 0, (const struct sockaddr *)&remote_addr, sizeof(remote_addr));
+
+    if (sent_bytes < 0) {
+        RCLCPP_WARN(this->get_logger(), "Failed to send UDP packet");
+    }
+}
+
+void ROS2CAN_Node::MotorBoard_callback(const ros2can::msg::MotorBoardTX::SharedPtr msg)  {
+    if (sockfd_ < 0) return;
+    UdpPacket packet;
+    std::memset(&packet, 0, sizeof(packet));
+    packet.header[0] = 'C';
+    packet.header[1] = 'A';
+    packet.header[2] = 'N';
+
+    ID id;
+    id.fields.priority = msg->priority;
+    id.fields.data_type = DataType::MOTORBOARD_COMMAND;
+    id.fields.board_num = msg->board_num;
+
+    MotorBoardTX_CANPacket motorboard_packet;
+    for (int i = 0; i < 4; ++i) {
+        motorboard_packet.mode[i] = msg->mode[i];
+        motorboard_packet.target[i] = msg->target[i];
+    }
+    motorboard_packet.monitor_flag = msg->monitor_flag;
+    motorboard_packet.monitor_freq = msg->monitor_freq;
+
+    packet.id = id.id;
+    packet.size = sizeof(MotorBoardTX_CANPacket);
+    
+    memcpy(packet.data, &motorboard_packet, sizeof(motorboard_packet));
+    ssize_t sent_bytes = sendto(sockfd_, &packet, sizeof(packet), 0, (const struct sockaddr *)&remote_addr, sizeof(remote_addr));
+
+    if (sent_bytes < 0) {
+        RCLCPP_WARN(this->get_logger(), "Failed to send UDP packet");
+    }
+}
+
 
 void ROS2CAN_Node::rx_thread_func() {
     UdpPacket packet;
@@ -180,6 +257,14 @@ void ROS2CAN_Node::rx_thread_func() {
                 msg.battery2_voltage = pwr_packet.battery2_voltage;
                 msg.output_voltage = pwr_packet.output_voltage;
                 pwr_rx_publisher_->publish(msg);
+            } else if (id.fields.data_type == DataType::BLDC_COMMAND) {
+                BLDCRX_CANPacket bldc_packet;
+                ros2can::msg::BLDCRX msg;
+                memcpy(&bldc_packet, packet.data, sizeof(bldc_packet));
+                msg.board_num = id.fields.board_num;
+                msg.rps = bldc_packet.rps;
+                msg.angle = bldc_packet.angle;
+                bldc_rx_publisher_->publish(msg);
             } else {
                 ros2can::msg::UdpCanFrame msg;
                 msg.id = packet.id;

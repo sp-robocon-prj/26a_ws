@@ -15,6 +15,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/PWRManagerTX.msg"
   "msg/PWRManagerRX.msg"
   "msg/MotorBoardTX.msg"
+  "msg/ServoTX.msg"
   "msg/UdpCanFrame.msg"
 )
 ament_export_dependencies(rosidl_default_runtime)
